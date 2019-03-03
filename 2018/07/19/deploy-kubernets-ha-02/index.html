@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="创建 Kubernetes 集群：生成证书"><meta name="keywords" content=""><meta name="author" content="kuops,undefined"><meta name="copyright" content="kuops"><title>创建 Kubernetes 集群：生成证书 | Kuops Blog</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.4"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  localSearch: undefined
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#证书列表"><span class="toc-number">1.</span> <span class="toc-text">证书列表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备-opensl-配置文件"><span class="toc-number">2.</span> <span class="toc-text">准备 opensl 配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#根（CA）证书"><span class="toc-number">3.</span> <span class="toc-text">根（CA）证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ETCD-证书"><span class="toc-number">4.</span> <span class="toc-text">ETCD 证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kubernets-组件证书"><span class="toc-number">5.</span> <span class="toc-text">Kubernets 组件证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#集群管理员证书"><span class="toc-number">6.</span> <span class="toc-text">集群管理员证书</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分发证书"><span class="toc-number">7.</span> <span class="toc-text">分发证书</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.jpg"></div><div class="author-info__name text-center">kuops</div><div class="author-info__description text-center">巧者劳而智者忧，无能者无所求</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">36</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">5</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1529517901642&amp;di=5f7db410ab487b78dd0afc85bc246702&amp;imgtype=0&amp;src=http%3A%2F%2Fimg5.duitang.com%2Fuploads%2Fitem%2F201610%2F21%2F20161021234613_KvFXP.jpeg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Kuops Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">创建 Kubernetes 集群：生成证书</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2018-07-19</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/kubernetes/">kubernetes</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div id="post-content"><blockquote>
+<p>本篇文章为创建 Kubernets 集群 <code>第二部分</code></p>
+<ol>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-01/">环境准备</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-02/">生成证书</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-03/">生成kubeconfig</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-04/">配置 etcd 集群</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-05/">配置 HA</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-06/">配置 Master 组件</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-07/">配置 bootstrap</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-08/">配置 kubelet 组件</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-09/">配置 kube-proxy 组件</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-10/">配置 Flannel 和 CoreDNS</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-11/">配置 ipvs</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-12/">配置 traefik ingress</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-13/">配置 dashboard</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-14/">配置 promethus-opreater</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-15/">配置 EFK</a></li>
+<li><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-16/">配置 Ceph 存储</a></li>
+</ol>
+</blockquote>
+<h2 id="证书列表"><a href="#证书列表" class="headerlink" title="证书列表"></a>证书列表</h2><p>准备证书列表：</p>
+<blockquote>
+<ul>
+<li><strong>kubernetes CA 机构证书及私钥：</strong> ca.crt ca.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>etcd-server 证书及私钥：</strong> etcd-server.crt etcd-server.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>etcd-peer 证书及私钥：</strong> etcd-peer.crt etcd-peer.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>etcd-client 证书及私钥：</strong> etcd-client.crt etcd-client.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>kube-apiserver 证书及私钥：</strong> kube-apiserver.crt  kube-apiserver.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>apiserver-kubelet-client 证书及私钥：</strong> apiserver-kubelet-client.crt apiserver-kubelet-client.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>service-account 的公钥和私钥：</strong> sa.pub sa.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>kube-scheduler 的证书及私钥：</strong> kube-scheduler.crt kube-scheduler.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>kube-proxy 的证书及私钥：</strong> kube-proxy.crt kube-proxy.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>front-proxy-ca 的证书及私钥：</strong> front-proxy-ca.crt front-proxy-ca.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>front-proxy-client 的证书及私钥：</strong> front-proxy-client.crt front-proxy-client.key</li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li><strong>admin 管理员证书及私钥：</strong> admin.crt admin.key</li>
+</ul>
+</blockquote>
+<h2 id="准备-opensl-配置文件"><a href="#准备-opensl-配置文件" class="headerlink" title="准备 opensl 配置文件"></a>准备 opensl 配置文件</h2><p>进入 kubernets 的证书目录<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/kubernetes/pki</span><br></pre></td></tr></table></figure></p>
+<p>准备 openssl.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF&gt; /etc/kubernetes/pki/openssl.cnf</span><br><span class="line">[ req ]</span><br><span class="line">distinguished_name = req_distinguished_name</span><br><span class="line">[req_distinguished_name]</span><br><span class="line">[ v3_ca ]</span><br><span class="line">basicConstraints = critical, CA:TRUE</span><br><span class="line">keyUsage = critical, digitalSignature, keyEncipherment, keyCertSign</span><br><span class="line">[ v3_req_server ]</span><br><span class="line">basicConstraints = CA:FALSE</span><br><span class="line">keyUsage = critical, digitalSignature, keyEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line">[ v3_req_client ]</span><br><span class="line">basicConstraints = CA:FALSE</span><br><span class="line">keyUsage = critical, digitalSignature, keyEncipherment</span><br><span class="line">extendedKeyUsage = clientAuth</span><br><span class="line">[ v3_req_apiserver ]</span><br><span class="line">basicConstraints = CA:FALSE</span><br><span class="line">keyUsage = critical, digitalSignature, keyEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth</span><br><span class="line">subjectAltName = @alt_names_cluster</span><br><span class="line">[ v3_req_etcd ]</span><br><span class="line">basicConstraints = CA:FALSE</span><br><span class="line">keyUsage = critical, digitalSignature, keyEncipherment</span><br><span class="line">extendedKeyUsage = serverAuth, clientAuth</span><br><span class="line">subjectAltName = @alt_names_etcd</span><br><span class="line">[ alt_names_cluster ]</span><br><span class="line">DNS.1 = kubernetes</span><br><span class="line">DNS.2 = kubernetes.default</span><br><span class="line">DNS.3 = kubernetes.default.svc</span><br><span class="line">DNS.4 = kubernetes.default.svc.cluster.local</span><br><span class="line">DNS.5 = k8s-master1</span><br><span class="line">DNS.6 = k8s-master2</span><br><span class="line">DNS.7 = k8s-master3</span><br><span class="line">DNS.8 = localhost</span><br><span class="line">IP.1 = 10.96.0.1</span><br><span class="line">IP.2 = 127.0.0.1</span><br><span class="line">IP.3 = 10.0.7.100</span><br><span class="line">IP.4 = 10.0.7.101</span><br><span class="line">IP.5 = 10.0.7.102</span><br><span class="line">IP.6 = 10.0.7.103</span><br><span class="line">[ alt_names_etcd ]</span><br><span class="line">DNS.1 = localhost</span><br><span class="line">IP.1 = 10.0.7.101</span><br><span class="line">IP.2 = 10.0.7.102</span><br><span class="line">IP.3 = 10.0.7.103</span><br><span class="line">IP.4 = 127.0.0.1</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></p>
+<h2 id="根（CA）证书"><a href="#根（CA）证书" class="headerlink" title="根（CA）证书"></a>根（CA）证书</h2><p>准备 kubernetes CA  证书，证书的颁发机构名称为 <code>kubernets</code>：</p>
+<blockquote>
+<p>用于签署其它的 K8s 证书。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out ca.key 2048</span><br><span class="line">openssl req -x509 -new -nodes -key ca.key -config openssl.cnf -subj &quot;/CN=kubernetes&quot; -extensions v3_ca -out ca.crt -days 10000</span><br></pre></td></tr></table></figure>
+<h2 id="ETCD-证书"><a href="#ETCD-证书" class="headerlink" title="ETCD 证书"></a>ETCD 证书</h2><p>准备 etcd-server 证书：</p>
+<blockquote>
+<p>用于 etcd 客户端和服务器之间通信的证书</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out etcd-server.key 2048</span><br><span class="line">openssl req -new -key etcd-server.key -subj &quot;/CN=etcd-server&quot; -out etcd-server.csr</span><br><span class="line">openssl x509 -in etcd-server.csr -req -CA ca.crt -CAkey ca.key -CAcreateserial -extensions v3_req_etcd -extfile openssl.cnf -out etcd-server.crt -days 10000</span><br></pre></td></tr></table></figure>
+<p>准备 etcd-peer 证书</p>
+<blockquote>
+<p>用于 etcd 服务器和服务器之间通信的证书</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out etcd-peer.key 2048</span><br><span class="line">openssl req -new -key etcd-peer.key -subj &quot;/CN=etcd-peer&quot; -out etcd-peer.csr</span><br><span class="line">openssl x509 -in etcd-peer.csr -req -CA ca.crt -CAkey ca.key -CAcreateserial -extensions v3_req_etcd -extfile openssl.cnf -out etcd-peer.crt -days 10000</span><br></pre></td></tr></table></figure>
+<p>准备 etcd-client 证书</p>
+<blockquote>
+<p>用于 etcd 客户端使用的证书</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out etcd-client.key 2048</span><br><span class="line">openssl req -new -key etcd-client.key -subj &quot;/CN=etcd-client&quot; -out etcd-client.csr</span><br><span class="line">openssl x509 -in etcd-client.csr -req -CA ca.crt -CAkey ca.key -CAcreateserial -extensions v3_req_etcd -extfile openssl.cnf -out etcd-client.crt -days 10000</span><br></pre></td></tr></table></figure>
+<h2 id="Kubernets-组件证书"><a href="#Kubernets-组件证书" class="headerlink" title="Kubernets 组件证书"></a>Kubernets 组件证书</h2><p>准备 kube-apiserver 证书：</p>
+<blockquote>
+<p>用于 kube-apiserver 的证书</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out kube-apiserver.key 2048</span><br><span class="line">openssl req -new -key kube-apiserver.key -subj &quot;/CN=kube-apiserver&quot; -config openssl.cnf -out kube-apiserver.csr</span><br><span class="line">openssl x509 -req -in kube-apiserver.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 10000 -extensions v3_req_apiserver -extfile openssl.cnf -out kube-apiserver.crt</span><br></pre></td></tr></table></figure>
+<p>准备 apiserver-kubelet-client 证书：</p>
+<blockquote>
+<p>用于 apiserver 对 kubelet 的进行客户端身份验证</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  apiserver-kubelet-client.key 2048</span><br><span class="line">openssl req -new -key apiserver-kubelet-client.key -subj &quot;/CN=apiserver-kubelet-client/O=system:masters&quot; -out apiserver-kubelet-client.csr</span><br><span class="line">openssl x509 -req -in apiserver-kubelet-client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 10000 -extensions v3_req_client -extfile openssl.cnf -out apiserver-kubelet-client.crt</span><br></pre></td></tr></table></figure>
+<p>准备 service account 私钥：</p>
+<blockquote>
+<p>service account token 的私钥仅提供给 controller-manager 使用。controller-manager 通过 <code>sa.key</code> 对 token 进行签名。<br>master 节点通过公钥 <code>sa.pub</code> 进行验证签名。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  sa.key 2048</span><br><span class="line">openssl ecparam -name secp521r1 -genkey -noout -out sa.key</span><br><span class="line">openssl ec -in sa.key -outform PEM -pubout -out sa.pub</span><br><span class="line">openssl req -new -sha256 -key sa.key -subj &quot;/CN=system:kube-controller-manager&quot; -out sa.csr</span><br><span class="line">openssl x509 -req -in sa.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 10000 -extensions v3_req_client -extfile openssl.cnf -out sa.crt</span><br></pre></td></tr></table></figure>
+<p>准备 kube-scheduler 证书：</p>
+<blockquote>
+<p>允许访问 kube-scheduler 组件所需的资源。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  kube-scheduler.key 2048</span><br><span class="line">openssl req -new -key kube-scheduler.key -subj &quot;/CN=system:kube-scheduler&quot; -out kube-scheduler.csr</span><br><span class="line">openssl x509 -req -in kube-scheduler.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 10000 -extensions v3_req_client -extfile openssl.cnf -out kube-scheduler.crt</span><br></pre></td></tr></table></figure>
+<p>准备 kube-proxy 证书</p>
+<blockquote>
+<p>仅当您要使用 kube-proxy role 而不是具有JWT(json web token)令牌（kubernetes secrets）的 kube-proxy 服务帐户进行身份验证时，才创建 kube-proxy 证书。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  kube-proxy.key 2048</span><br><span class="line">openssl req -new -key kube-proxy.key -subj &quot;/CN=kube-proxy/O=system:node-proxier&quot; -out kube-proxy.csr</span><br><span class="line">openssl x509 -req -in kube-proxy.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 10000 -extensions v3_req_client -extfile openssl.cnf -out kube-proxy.crt</span><br></pre></td></tr></table></figure>
+<p>准备 front-proxy-ca 证书</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  front-proxy-ca.key 2048</span><br><span class="line">openssl req -x509 -new -nodes -key front-proxy-ca.key -config openssl.cnf -subj &quot;/CN=front-proxy-ca&quot; -extensions v3_ca  -config openssl.cnf  -out front-proxy-ca.crt -days 10000</span><br></pre></td></tr></table></figure>
+<p>准备 front-proxy-client 证书</p>
+<blockquote>
+<p>用于将指定的 header 中的用户名之前验证传入请求的客户端证书 <code>--requestheader-username-headers</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  front-proxy-client.key 2048</span><br><span class="line">openssl req -new -key front-proxy-client.key -subj &quot;/CN=front-proxy-client&quot; -out front-proxy-client.csr</span><br><span class="line">openssl x509 -req -in front-proxy-client.csr -CA front-proxy-ca.crt -CAkey front-proxy-ca.key -CAcreateserial -days 10000 -extensions v3_req_client -extfile openssl.cnf -out front-proxy-client.crt</span><br></pre></td></tr></table></figure>
+<h2 id="集群管理员证书"><a href="#集群管理员证书" class="headerlink" title="集群管理员证书"></a>集群管理员证书</h2><p>准备  admin 管理员证书：</p>
+<blockquote>
+<p>管理员访问 kubernets 资源的证书</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">openssl genrsa -out  admin.key 2048</span><br><span class="line">openssl req -new -key admin.key -subj &quot;/CN=admin/O=system:masters&quot; -out admin.csr</span><br><span class="line">openssl x509 -req -in admin.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 10000 -extensions v3_req_client -extfile openssl.cnf -out admin.crt</span><br></pre></td></tr></table></figure>
+<h2 id="分发证书"><a href="#分发证书" class="headerlink" title="分发证书"></a>分发证书</h2><p>清理 csr 文件，并分发证书到其他 master 节点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rm *.csr -f</span><br><span class="line">for i in &#123;2..3&#125;;do</span><br><span class="line">    scp -rp /etc/kubernetes/pki root@10.0.7.10$&#123;i&#125;:/etc/kubernetes</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">kuops</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://kuops.com/2018/07/19/deploy-kubernets-ha-02/">https://kuops.com/2018/07/19/deploy-kubernets-ha-02/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://kuops.com" target="_blank">Kuops Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2018/08/04/Kubernetes-资源对象之HorizontalPodAutoscaler/"><i class="fa fa-chevron-left">  </i><span>Kubernetes 资源对象之 HorizontalPodAutoscaler</span></a></div><div class="next-post pull-right"><a href="/2018/07/19/deploy-kubernets-ha-16/"><span>创建 Kubernetes 集群：配置 Ceph 存储</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="disqus_thread"></div><script>var unused = null;
+var disqus_config = function () {
+  this.page.url = 'https://kuops.com/2018/07/19/deploy-kubernets-ha-02/';
+  this.page.identifier = '2018/07/19/deploy-kubernets-ha-02/';
+  this.page.title = '创建 Kubernetes 集群：生成证书';
+}
+var d = document, s = d.createElement('script');
+s.src = "https://" + 'kuops-com' +".disqus.com/embed.js";
+s.setAttribute('data-timestamp', '' + +new Date());
+(d.head || d.body).appendChild(s);</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2019 By kuops</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.4"></script><script src="/js/fancybox.js?version=1.5.4"></script><script src="/js/sidebar.js?version=1.5.4"></script><script src="/js/copy.js?version=1.5.4"></script><script src="/js/fireworks.js?version=1.5.4"></script><script src="/js/transition.js?version=1.5.4"></script><script src="/js/scroll.js?version=1.5.4"></script><script src="/js/head.js?version=1.5.4"></script></body></html>

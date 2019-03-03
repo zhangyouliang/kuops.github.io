@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Windows 配置 WSL 开发环境"><meta name="keywords" content=""><meta name="author" content="kuops,undefined"><meta name="copyright" content="kuops"><title>Windows 配置 WSL 开发环境 | Kuops Blog</title><link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css?version=1.5.4"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  localSearch: undefined
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WSL-常用操作"><span class="toc-number">1.</span> <span class="toc-text">WSL 常用操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-WSL"><span class="toc-number">1.1.</span> <span class="toc-text">安装 WSL</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WSL-切换"><span class="toc-number">1.2.</span> <span class="toc-text">WSL 切换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#密码重置"><span class="toc-number">1.3.</span> <span class="toc-text">密码重置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-VcXsrv"><span class="toc-number">2.</span> <span class="toc-text">安装 VcXsrv</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#初始化-WSL"><span class="toc-number">3.</span> <span class="toc-text">初始化 WSL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置-Cmder"><span class="toc-number">4.</span> <span class="toc-text">设置 Cmder</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置-VScode"><span class="toc-number">5.</span> <span class="toc-text">设置 VScode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置-tmux"><span class="toc-number">6.</span> <span class="toc-text">设置 tmux</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常规操作"><span class="toc-number">6.1.</span> <span class="toc-text">常规操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制模式"><span class="toc-number">6.2.</span> <span class="toc-text">复制模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tmux-配置文件"><span class="toc-number">6.3.</span> <span class="toc-text">tmux 配置文件</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.jpg"></div><div class="author-info__name text-center">kuops</div><div class="author-info__description text-center">巧者劳而智者忧，无能者无所求</div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">36</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">5</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1529517901642&amp;di=5f7db410ab487b78dd0afc85bc246702&amp;imgtype=0&amp;src=http%3A%2F%2Fimg5.duitang.com%2Fuploads%2Fitem%2F201610%2F21%2F20161021234613_KvFXP.jpeg)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">Kuops Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a><a class="site-page" href="/categories">Categories</a></span></div><div id="post-info"><div id="post-title">Windows 配置 WSL 开发环境</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-01-08</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/wsl/">wsl</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div id="post-content"><h2 id="WSL-常用操作"><a href="#WSL-常用操作" class="headerlink" title="WSL 常用操作"></a>WSL 常用操作</h2><h3 id="安装-WSL"><a href="#安装-WSL" class="headerlink" title="安装 WSL"></a>安装 WSL</h3><ol>
+<li>打开 PowerShell 运行：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>在 Windows 商店安装 Ubuntu 18.04</li>
+</ol>
+<h3 id="WSL-切换"><a href="#WSL-切换" class="headerlink" title="WSL 切换"></a>WSL 切换</h3><p>wslconfig.exe 可以管理系统已安装的发行版，和设置默认的发行版：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">~$ wslconfig.exe /list</span><br><span class="line">适于 Linux 的 Windows 子系统:</span><br><span class="line">Ubuntu (默认)</span><br></pre></td></tr></table></figure>
+<p><code>wslconfig /list</code> ：列出 WSL 可用的 Linux 发行版。如果列出了分发版，则会安装并准备使用。</p>
+<p><code>wslconfig /list /all</code>: 列出 WSL 所有发行版，包括正在安装，或者安装失败的</p>
+<p><code>wslconfig /unregister &lt;DistributionName&gt;</code>： 从 WSL 发行版中取消注册，执行 <code>wslconfig /list</code> 将无法显示</p>
+<p><code>wslconfig /setdefault &lt;DistributionName&gt;</code>: 设置默认的发行版 </p>
+<blockquote>
+<p>例如： <code>wslconfig /setdefault Ubuntu</code>  设置默认 wsl 使用 ubuntu ， 运行 <code>wsl npm init</code> 就会在 ubuntu 中运行该命令</p>
+</blockquote>
+<h3 id="密码重置"><a href="#密码重置" class="headerlink" title="密码重置"></a>密码重置</h3><p>打开 <code>cmd</code> , 设置启动用户为 root</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt; ubuntu config --default-user root</span><br></pre></td></tr></table></figure>
+<p>启动 ubuntu.exe , 此时用户将是 root ，在 <code>bash</code> 中执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ passwd username</span><br></pre></td></tr></table></figure>
+<p>将用户切回普通用户，在 <code>cmd</code> 中执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt; ubuntu config --default-user username</span><br></pre></td></tr></table></figure>
+<h2 id="安装-VcXsrv"><a href="#安装-VcXsrv" class="headerlink" title="安装 VcXsrv"></a>安装 VcXsrv</h2><p>由于 xming 已经不维护了，vscode 安装会有问题，使用 VcXsrv 则没有那些问题</p>
+<p>地址 <a href="https://sourceforge.net/projects/vcxsrv/" target="_blank" rel="noopener">https://sourceforge.net/projects/vcxsrv/</a></p>
+<p>设置 XLaunch</p>
+<ul>
+<li><p>全屏使用: 点击 One Window without titlebar，点击下一步</p>
+</li>
+<li><p>窗口使用：点击 multiple windows ，点击下一步</p>
+</li>
+<li><p>点击 Start no client，点击下一步</p>
+</li>
+<li><p>勾选 Disable access control ，点击下一步，点击完成</p>
+</li>
+</ul>
+<p>Windows 开启一个新的虚拟桌面 <code>Win + Ctrl + D</code> ,切换虚拟桌面 <code>Win + Ctrl +左/右</code> , 并启动 XLaunch </p>
+<p>关闭虚拟桌面为 <code>Win + Ctrl + F4</code></p>
+<h2 id="初始化-WSL"><a href="#初始化-WSL" class="headerlink" title="初始化 WSL"></a>初始化 WSL</h2><p>安装常用软件，和初始化 wsl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://github.com/kuops/Scripts/blob/master/bash/wsl-init.sh|sudo bash</span><br></pre></td></tr></table></figure>
+<p>如果中文输入法有问题，使用 <code>fcitx-diagnose</code> 排错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fcitx-diagnose</span><br></pre></td></tr></table></figure>
+<h2 id="设置-Cmder"><a href="#设置-Cmder" class="headerlink" title="设置 Cmder"></a>设置 Cmder</h2><p>由于 conemu 使用 wsl vim 使用非常慢，而 cmder 没有这个问题，Windows 安装 cmder</p>
+<p>下载地址： <a href="http://cmder.net/" target="_blank" rel="noopener">http://cmder.net/</a></p>
+<h2 id="设置-VScode"><a href="#设置-VScode" class="headerlink" title="设置 VScode"></a>设置 VScode</h2><p>如果使用 windows 的 vscode 则 settings.json 设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;terminal.integrated.shell.windows&quot;: &quot;C:\\Windows\\System32\\wsl.exe&quot;,</span><br><span class="line">&quot;files.autoSave&quot;: &quot;afterDelay&quot;,</span><br><span class="line">&quot;go.goroot&quot;: &quot;C:\\Go&quot;,</span><br><span class="line">&quot;go.gopath&quot;: &quot;C:\\Code\\go_workspace&quot;,</span><br><span class="line">&quot;terminal.integrated.fontFamily&quot;: &quot;Source Code Pro for Powerline&quot;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>复制路径，安装一个插件 <code>Copy WSL Path</code> ，可以复制 windows 路径为 WSL 路径</p>
+<h2 id="设置-tmux"><a href="#设置-tmux" class="headerlink" title="设置 tmux"></a>设置 tmux</h2><p>tmux 主要特点有两个：</p>
+<ul>
+<li>多窗口操作，在一个终端分出多个终端</li>
+<li>避免 SSH 连接不稳定，断开前台任务问题</li>
+</ul>
+<blockquote>
+<p>在开启了 tmux 服务器后，会首先创建一个会话，而这个会话则会首先创建一个 窗口，其中仅包含一个面板；也就是说，这里看到的所谓终端控制台应该称作 tmux 的一个面板， 虽然其使用方法与终端控制台完全相同。</p>
+</blockquote>
+<p>tmux使用 C/S 模型构建，主要包括以下单元模块：</p>
+<ul>
+<li>server服务器: 输入tmux命令时就开启了一个服务器。</li>
+<li>session会话: 一个服务器可以包含多个会话</li>
+<li>window窗口: 一个会话可以包含多个窗口。</li>
+<li>pane面板: 一个窗口可以包含多个面板。</li>
+</ul>
+<p>TMUX 中文指南 <a href="https://www.kancloud.cn/kancloud/tmux/62459" target="_blank" rel="noopener">https://www.kancloud.cn/kancloud/tmux/62459</a></p>
+<h3 id="常规操作"><a href="#常规操作" class="headerlink" title="常规操作"></a>常规操作</h3><p>session 管理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tmux                      # 创建新的 session</span><br><span class="line">tmux new -S name          # 创建新的 session 并指定 name</span><br><span class="line">tmux ls                   # 查看 session 列表</span><br><span class="line">tmux a 或 tmux at 或 tmux attach   # 如果当前仅有一个 session，重新连接该 session</span><br><span class="line">tmux a -t num             # 如果有多个 session, 指定 session num 连接</span><br><span class="line">tmux kill-session -t name     # kill 名称为 name 的 session</span><br><span class="line">tmux kill-session -a          # kill 所有 session, 除了当前的 session</span><br><span class="line">tmux kill-session -a -t name  # kill 所有 session, 除了 name</span><br></pre></td></tr></table></figure>
+<p>常用快捷键</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ctrl + b       # prefix 键，在操作所有快捷键之前需要按 prefix 键，并松开，之后按其他快捷键</span><br><span class="line">prefix + ？    # 显示帮助</span><br><span class="line">prefix + s     # 显示会话</span><br><span class="line">prefix + (     # 切换到上一会话</span><br><span class="line">prefix + )     # 切换到下一会话</span><br><span class="line">prefix + $     # 重命名会话</span><br><span class="line">prefix + c     # 新建窗口</span><br><span class="line">prefix + w     # 列出窗口</span><br><span class="line">prefix + n     # 下一个窗口</span><br><span class="line">prefix + p     # 上一个窗口</span><br><span class="line">prefix + &amp;     # 关闭当前窗口</span><br><span class="line">prefix + ,     # 重命名窗口</span><br><span class="line">prefix + [1-9] # 切换窗口</span><br><span class="line">prefix + &quot;     # 添加一行分面板</span><br><span class="line">prefix + %     # 添加一列分面板</span><br><span class="line">prefix + q     # 显示分割面板编号</span><br><span class="line">prefix + o     # 切换到下一面板</span><br><span class="line">prefix + ;     # 切换到最后一个使用的面板</span><br><span class="line">prefix + 方向键  # 切换面板</span><br><span class="line">prefix + x   # 关闭当前面板</span><br><span class="line">prefix + (ctrl + 方向键)  # 调整面板大小</span><br><span class="line">prefix + d   # 退出tumx，tmux 仍在后台运行，可以通过tmux attach进入 到指定的会话</span><br></pre></td></tr></table></figure>
+<p>复制模式, 按下 <code>PREFIX-[</code> 即可进入复制模式，</p>
+<p>设置 <code>tmux.conf</code> 通过 vim 的快捷键实现浏览, 复制等操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setw -g mode-keys vi</span><br></pre></td></tr></table></figure>
+<h3 id="复制模式"><a href="#复制模式" class="headerlink" title="复制模式"></a>复制模式</h3><p>添加下面一行到 $HOME/.tmux.conf, 通过 vim 的快捷键实现浏览, 复制等操作;</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setw -g mode-keys vi</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>prefix + [</code></td>
+<td>进入复制模式</td>
+</tr>
+<tr>
+<td><code>prefix + ]</code></td>
+<td>粘贴选择内容(粘贴 buffer_0 的内容)</td>
+</tr>
+<tr>
+<td>:show-buffer</td>
+<td>显示 buffer_0 的内容</td>
+</tr>
+<tr>
+<td>:capture-buffer</td>
+<td>复制整个能见的内容到当前的 buffer</td>
+</tr>
+<tr>
+<td>:list-buffers</td>
+<td>列出所有的 buffer</td>
+</tr>
+<tr>
+<td>:choose-buffer</td>
+<td>列出所有的 buffer, 并选择用于粘贴的 buffer</td>
+</tr>
+<tr>
+<td>:save-buffer buf.txt</td>
+<td>将 buffer 的内容复制到 buf.txt</td>
+</tr>
+<tr>
+<td>:delete-buffer -b 1</td>
+<td>删除 buffer_1</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>vi</th>
+<th>emacs</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>M-m</td>
+<td>跳转到一行开头</td>
+</tr>
+<tr>
+<td>Escape</td>
+<td>C-g</td>
+<td>放弃选择</td>
+</tr>
+<tr>
+<td>k</td>
+<td>Up</td>
+<td>上移</td>
+</tr>
+<tr>
+<td>j</td>
+<td>Down</td>
+<td>下移</td>
+</tr>
+<tr>
+<td>h</td>
+<td>Left</td>
+<td>左移</td>
+</tr>
+<tr>
+<td>l</td>
+<td>Right</td>
+<td>右移</td>
+</tr>
+<tr>
+<td>L</td>
+<td></td>
+<td>最后一行</td>
+</tr>
+<tr>
+<td>M</td>
+<td>M-r</td>
+<td>中间一行</td>
+</tr>
+<tr>
+<td>H</td>
+<td>M-R</td>
+<td>第一行</td>
+</tr>
+<tr>
+<td>$</td>
+<td>C-e</td>
+<td>跳转到行尾</td>
+</tr>
+<tr>
+<td>:</td>
+<td>g</td>
+<td>跳转至某一行</td>
+</tr>
+<tr>
+<td>C-d</td>
+<td>M-Down</td>
+<td>下翻半页</td>
+</tr>
+<tr>
+<td>C-u</td>
+<td>M-Up</td>
+<td>上翻半页</td>
+</tr>
+<tr>
+<td>C-f</td>
+<td>Page down</td>
+<td>下翻一页</td>
+</tr>
+<tr>
+<td>C-b</td>
+<td>Page up</td>
+<td>上翻一页</td>
+</tr>
+<tr>
+<td>w</td>
+<td>M-f</td>
+<td>下一个字符</td>
+</tr>
+<tr>
+<td>b</td>
+<td>M-b</td>
+<td>前一个字符</td>
+</tr>
+<tr>
+<td>q</td>
+<td>Escape</td>
+<td>退出</td>
+</tr>
+<tr>
+<td>?</td>
+<td>C-r</td>
+<td>往上查找</td>
+</tr>
+<tr>
+<td>/</td>
+<td>C-s</td>
+<td>往下查找</td>
+</tr>
+<tr>
+<td>n</td>
+<td>n</td>
+<td>查找下一个</td>
+</tr>
+<tr>
+<td>Space</td>
+<td>C-Space</td>
+<td>进入选择模式</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>M-w</td>
+<td>确认选择内容, 并退出</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tmux-配置文件"><a href="#tmux-配置文件" class="headerlink" title="tmux 配置文件"></a>tmux 配置文件</h3><p>设置 <code>~/.tmux.conf</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 设置复制模式，空格开始选，Enter结束复制</span><br><span class="line">setw -g mode-keys vi</span><br><span class="line"></span><br><span class="line"># 设置颜色</span><br><span class="line">set -g default-terminal &quot;screen-256color&quot;</span><br><span class="line"></span><br><span class="line"># 开启剪切板</span><br><span class="line">set -g set-clipboard on</span><br><span class="line"></span><br><span class="line"># 设置历史记录限制</span><br><span class="line">set -g history-limit 102400</span><br><span class="line"></span><br><span class="line"># 关闭窗口后重新编号</span><br><span class="line">set -g renumber-windows on</span><br><span class="line"></span><br><span class="line"># 安装 yank 插件，系统复制粘贴用，wsl 依赖 clip.exe 命令</span><br><span class="line">set -g @plugin &apos;tmux-plugins/tmux-yank&apos;</span><br></pre></td></tr></table></figure>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">kuops</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://kuops.com/2019/01/08/Windows-配置-WSL-开发环境/">https://kuops.com/2019/01/08/Windows-配置-WSL-开发环境/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://kuops.com" target="_blank">Kuops Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2019/01/23/docker-namespace-cgroup/"><i class="fa fa-chevron-left">  </i><span>Linux 的 CGroup 和 Namespace</span></a></div><div class="next-post pull-right"><a href="/2018/10/13/Shell-并发编程/"><span>Shell 并发编程</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="disqus_thread"></div><script>var unused = null;
+var disqus_config = function () {
+  this.page.url = 'https://kuops.com/2019/01/08/Windows-配置-WSL-开发环境/';
+  this.page.identifier = '2019/01/08/Windows-配置-WSL-开发环境/';
+  this.page.title = 'Windows 配置 WSL 开发环境';
+}
+var d = document, s = d.createElement('script');
+s.src = "https://" + 'kuops-com' +".disqus.com/embed.js";
+s.setAttribute('data-timestamp', '' + +new Date());
+(d.head || d.body).appendChild(s);</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2018 - 2019 By kuops</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="/js/third-party/anime.min.js"></script><script src="/js/third-party/jquery.min.js"></script><script src="/js/third-party/jquery.fancybox.min.js"></script><script src="/js/third-party/velocity.min.js"></script><script src="/js/third-party/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.5.4"></script><script src="/js/fancybox.js?version=1.5.4"></script><script src="/js/sidebar.js?version=1.5.4"></script><script src="/js/copy.js?version=1.5.4"></script><script src="/js/fireworks.js?version=1.5.4"></script><script src="/js/transition.js?version=1.5.4"></script><script src="/js/scroll.js?version=1.5.4"></script><script src="/js/head.js?version=1.5.4"></script></body></html>
